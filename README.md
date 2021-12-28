@@ -1,4 +1,6 @@
 # HW-WebScraper
+A web scraper that parses a [CBC](https://www.cbc.ca/) article to the command line or a file.
+
 This is an open source project from [DevProjects](http://www.codementor.io/projects), made for an AlbertaSat Ground-Station Software kickoff project.
 
 ## Tech/framework used
