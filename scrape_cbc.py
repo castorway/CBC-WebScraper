@@ -112,7 +112,7 @@ class Parser():
                 self.output(tag.text)
 
 
-if __name__ == "__main__":
+def main():
     # input validation. does several checks to decrease likelihood that link
     # is incompatible with parser code.
 
@@ -123,7 +123,7 @@ if __name__ == "__main__":
         valid = False
 
     try:
-        end_digits = float(url[-10:])
+        float(url[-10:])
     except ValueError:
         valid = False
     
@@ -141,3 +141,7 @@ if __name__ == "__main__":
     # parses file and prints to output location
     parser = Parser(output_to=output_to, titles="format")
     parser.parse(url)
+
+
+if __name__ == "__main__":
+    main()
