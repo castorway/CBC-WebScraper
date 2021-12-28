@@ -9,7 +9,7 @@ This is an open source project from [DevProjects](http://www.codementor.io/proje
 - [Requests](https://docs.python-requests.org/en/master/)
 
 ## Dependencies
-Requires Python libraries BeautifulSoup4 and Requests to be installed.
+Requires Python libraries beautifulsoup4 and Requests to be installed.
 
 `pip install bs4`
 
