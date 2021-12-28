@@ -1,22 +1,24 @@
 # HW-WebScraper
-This is an open source project from [DevProjects](http://www.codementor.io/projects).
+This is an open source project from [DevProjects](http://www.codementor.io/projects), made for an AlbertaSat Ground-Station Software kickoff project.
 
 ## Tech/framework used
--> Python3
--> BeautifulSoup4
--> Requests
+- Python3
+- [beautifulsoup4](https://pypi.org/project/beautifulsoup4/)
+- [Requests](https://docs.python-requests.org/en/master/)
 
 ## Dependencies
-Requires Python3. Also requires Python libraries BeautifulSoup4 and Requests to be installed.
-`pip install requests`
+Requires Python libraries BeautifulSoup4 and Requests to be installed.
+
 `pip install bs4`
+
+`pip install requests`
 
 ## Usage
 `scrape_cbc.py` takes a required 'URL' argument and an optional 'location' argument.
 
 `python3 scrape_cbc.py <url> <location>`
 
-The `location` argument can be the name of a file (which will be overwritten) to print the parsed webpage to. If left empty, the parsed page will be printed to the command line.
+The 'location' argument can be the name of a file (which will be overwritten) to print the parsed webpage to. If left empty, the parsed page will be printed to the command line.
 
 Example usage:
 
