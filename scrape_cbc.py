@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import sys
+import argparse
 
 class Parser():
     def __init__(self, output_to=None, titles='format'):
@@ -19,7 +20,6 @@ class Parser():
             self.out = None
             self.output_to_file = False
     
-        self.url = url
         self.titles = titles
 
     def __del__(self):
@@ -40,6 +40,11 @@ class Parser():
             print(txt)
 
     def safe_find(self, soup, name=None, attrs={}):
+        """
+        Wraps BeautifulSoup's find_all method. Returns either the first
+        result of the list returned by find_all, or False if the tag wasn't
+        found.
+        """
         if name:
             found_tags = soup.find_all(name, attrs=attrs)
         else:
@@ -55,7 +60,7 @@ class Parser():
         Parses the webpage at `url`, assuming it is a typical CBC News article
         page. Outputs using output() function to designated location.
         """
-        req = requests.get(self.url)
+        req = requests.get(url)
         soup = BeautifulSoup(req.text, 'html.parser')
 
         # get title
@@ -65,12 +70,12 @@ class Parser():
         else:
             self.output("TITLE: [Not Found]")
 
-        # get byline/subtitle
+        # get subtitle
         # when using dictionary for attrs in find_all, BeautifulSoup doesn't
         # require `class_` workaround
-        byline = self.safe_find(soup, attrs={"class": "deck"})
-        if byline:
-            self.output("SUBTITLE: " + byline.text)
+        subtitle = self.safe_find(soup, attrs={"class": "deck"})
+        if subtitle:
+            self.output("SUBTITLE: " + subtitle.text)
         else: 
             self.output("SUBTITLE: [Not Found]")
 
@@ -87,6 +92,15 @@ class Parser():
             self.output("DATE: " + date['datetime'][:10])
         else:
             self.output("DATE: [Not Found]")
+
+        # get byline
+        # occasionally an author's name will be in the byline instead of an
+        # author tag
+        byline = self.safe_find(soup, attrs={"class": "bylineDetails"})
+        if byline:
+            self.output("FULL BYLINE: " + byline.text)
+        else: 
+            self.output("FULL BYLINE: [Not Found]")
 
         self.output("---------------") # divider for readability
 
@@ -113,6 +127,15 @@ class Parser():
 
 
 def main():
+
+    # use argparser to get optional name and format options
+    
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument('url', nargs=1)
+    argparser.add_argument('--name', '-n', help='Name of the file to be created (if any)')
+    argparser.add_argument('--format', '-f', help="Format option: 'format' (default), 'keep', 'skip'")
+    named_args = argparser.parse_args()
+
     # input validation. does several checks to decrease likelihood that link
     # is incompatible with parser code.
 
@@ -122,24 +145,27 @@ def main():
     if not url.startswith("https://www.cbc.ca/news/"):
         valid = False
 
+    # CBC news articles have a decimal number at the end of each URL (9
+    # characters including decimal point)
     try:
         float(url[-10:])
     except ValueError:
         valid = False
     
+    # if invalid, print error message
     if not valid:
         print("Please use the full URL for a CBC News article.")
         print("Example: https://www.cbc.ca/news/world/coronavirus-covid19-canada-world-dec27-2021-1.6298702")
         sys.exit()
 
     # checks if a file was provided in input
-    if len(sys.argv) > 2:
-        output_to = sys.argv[2]
-    else:
-        output_to = None
+    output_to = named_args.name
+
+    # checks if format was specified in input
+    titles = named_args.format
 
     # parses file and prints to output location
-    parser = Parser(output_to=output_to, titles="format")
+    parser = Parser(output_to=output_to, titles=titles)
     parser.parse(url)
 
 
